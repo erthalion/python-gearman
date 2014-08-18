@@ -11,9 +11,9 @@ from gearman.client_handler import GearmanClientCommandHandler
 from gearman.constants import PRIORITY_NONE, PRIORITY_LOW, PRIORITY_HIGH, JOB_UNKNOWN, JOB_PENDING
 from gearman.errors import ConnectionError, ExceededConnectionAttempts, ServerUnavailable
 
-gearman_logger = logging.getLogger(__name__)
+gearman_logger = logging.getLogger('gearman')
 
-# This number must be <= GEARMAN_UNIQUE_SIZE in gearman/libgearman/constants.h 
+# This number must be <= GEARMAN_UNIQUE_SIZE in gearman/libgearman/constants.h
 RANDOM_UNIQUE_BYTES = 16
 
 class GearmanClient(GearmanConnectionManager):
@@ -197,8 +197,9 @@ class GearmanClient(GearmanConnectionManager):
             try:
                 chosen_connection = self.establish_connection(possible_connection)
                 break
-            except ConnectionError:
+            except ConnectionError as ex:
                 # Rotate our server list so we'll skip all our broken servers
+                gearman_logger.error('An error occured when establish_connection. Ex: %s', ex)
                 failed_connections += 1
 
         if not chosen_connection:
