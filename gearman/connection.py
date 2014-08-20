@@ -109,7 +109,7 @@ class GearmanConnection(object):
         current_socket.setblocking(0)
         current_socket.settimeout(0.0)
         current_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, struct.pack('L', 1))
-        current_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        current_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self.gearman_socket = current_socket
 
     def read_command(self):
